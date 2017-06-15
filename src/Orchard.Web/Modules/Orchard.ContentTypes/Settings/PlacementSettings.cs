@@ -22,6 +22,11 @@ namespace Orchard.ContentTypes.Settings {
         /// </summary>
         public string Differentiator { get; set; }
 
+        /// <summary>
+        /// e.g, Content, MyTabText
+        /// </summary>
+        public string Tab { get; set; }
+
         public bool IsSameAs(PlacementSettings other) {
             return (ShapeType ?? String.Empty) == (other.ShapeType ?? String.Empty)
                 && (Differentiator ?? String.Empty) == (other.Differentiator ?? String.Empty);

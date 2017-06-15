@@ -207,6 +207,7 @@ namespace Orchard.ContentTypes.Services {
                         ShapeType = contentShapeResult.GetShapeType(),
                         Zone = zone,
                         Position = position,
+                        Tab = placement.GetTab(),
                         Differentiator = contentShapeResult.GetDifferentiator() ?? String.Empty
                     }
                 };
