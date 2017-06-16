@@ -4,7 +4,13 @@
     Script.Require("jQueryUI_Sortable");
     Layout.Title = T("Edit Placement - {0}", Model.ContentTypeDefinition.DisplayName).ToString();
 
-    var allTabs = Model.AllPlacements.SelectMany(x => x.PlacementSettings.Tab).ToList();
+    var allTabs = Model.AllPlacements.Where(x => !string.IsNullOrEmpty(x.PlacementSettings.Tab)).Select(x => x.PlacementSettings.Tab).Distinct().ToList();
+    var indexOfTabContent = allTabs.IndexOf("Content");
+    if (indexOfTabContent > -1)
+    {
+        allTabs.RemoveAt(indexOfTabContent);
+    } 
+    allTabs.Insert(0, "Content");
     var hiddenShapes = Model.AllPlacements.Where(x => String.IsNullOrEmpty(x.PlacementSettings.Zone) && (String.IsNullOrWhiteSpace(x.PlacementSettings.Position) || x.PlacementSettings.Position == "-"));
 }
 
@@ -17,7 +23,7 @@
     <ul id="placement">
         @foreach (var tab in allTabs) {
             <li>
-                <div>@tab</div>
+                <div class="shape-type"><h3>@tab</h3></div>
                 <ul data-tab="@tab">
 
                 </ul>
@@ -30,8 +36,8 @@
             if(placement.Zone != "Content") {
                 continue;
             }
-            <li data-shape-type="@placement.ShapeType" data-shape-differentiator="@placement.Differentiator" data-shape-zone="Content" data-shape-position="@placement.Position" @(string.IsNullOrEmpty(placement.Tab) ? "" : string.Format("data-tab={0}", placement.Tab))>
-                <div class="shape-type"><h3>@placement.ShapeType @placement.Differentiator</h3></div>
+            <li data-shape-type="@placement.ShapeType" data-shape-differentiator="@placement.Differentiator" data-shape-zone="Content" data-shape-position="@placement.Position" content-part @Html.Raw(string.IsNullOrEmpty(placement.Tab) ? "" : string.Format("data-tab='{0}'", placement.Tab))>
+                <div class="shape-type"><h3 style="float: left;">@placement.ShapeType @placement.Differentiator</h3><button style="float: right; margin-top: -1px; margin-right: 1em;">hide</button></div>
 				<div class="shape-editor">
 					@try {
 						@Display(Model.AllPlacements[i].Shape)
@@ -115,6 +121,8 @@
             for (var i = 0; i < allPlacementTabs.length; i++) {
                 var tabName = allPlacementTabs[i].getAttribute(tabAttrName);
                 var liUnderTab = $('li[' + tabAttrName + '="' + tabName + '"]');
+                if (tabName === "Content")
+                    liUnderTab = $('li[content-part]:not([data-tab])');
                 if (liUnderTab.length !== 0) {
                     liUnderTab.detach();
                     liUnderTab.appendTo(allPlacementTabs[i]);
