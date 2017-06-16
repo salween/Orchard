@@ -4,6 +4,7 @@
     Script.Require("jQueryUI_Sortable");
     Layout.Title = T("Edit Placement - {0}", Model.ContentTypeDefinition.DisplayName).ToString();
 
+    var allTabs = Model.AllPlacements.SelectMany(x => x.PlacementSettings.Tab).ToList();
     var hiddenShapes = Model.AllPlacements.Where(x => String.IsNullOrEmpty(x.PlacementSettings.Zone) && (String.IsNullOrWhiteSpace(x.PlacementSettings.Position) || x.PlacementSettings.Position == "-"));
 }
 
@@ -14,6 +15,14 @@
 
 
     <ul id="placement">
+        @foreach (var tab in allTabs) {
+            <li>
+                <div>@tab</div>
+                <ul data-tab="@tab">
+
+                </ul>
+            </li>
+        }
         @for (int i = 0; i < Model.AllPlacements.Count; i++ ) {
 
             var placement = Model.AllPlacements[i].PlacementSettings;
@@ -21,8 +30,7 @@
             if(placement.Zone != "Content") {
                 continue;
             }
-            
-            <li data-shape-type="@placement.ShapeType" data-shape-differentiator="@placement.Differentiator" data-shape-zone="Content" data-shape-position="@placement.Position">
+            <li data-shape-type="@placement.ShapeType" data-shape-differentiator="@placement.Differentiator" data-shape-zone="Content" data-shape-position="@placement.Position" @(string.IsNullOrEmpty(placement.Tab) ? "" : string.Format("data-tab={0}", placement.Tab))>
                 <div class="shape-type"><h3>@placement.ShapeType @placement.Differentiator</h3></div>
 				<div class="shape-editor">
 					@try {
@@ -101,6 +109,18 @@
 
         $("#placement").disableSelection();
 
+        var tabAttrName = 'data-tab';
+        var allPlacementTabs = $('ul[' + tabAttrName + ']');
+        if (allPlacementTabs.length !== 0) {
+            for (var i = 0; i < allPlacementTabs.length; i++) {
+                var tabName = allPlacementTabs[i].getAttribute(tabAttrName);
+                var liUnderTab = $('li[' + tabAttrName + '="' + tabName + '"]');
+                if (liUnderTab.length !== 0) {
+                    liUnderTab.detach();
+                    liUnderTab.appendTo(allPlacementTabs[i]);
+                }
+            }
+        }
     })(jQuery);
 //]]>
 </script>
