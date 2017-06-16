@@ -96,24 +96,8 @@
 
         assignPositions();
         
-        var startPos;
-
-        $('#placement').sortable({
-            placeholder: "placement-placeholder",
-            start: function (event, ui) {
-                var self = $(ui.item);
-                startPos = self.prevAll().size();
-            },
-            stop: function (event, ui) {
-                assignPositions();
-                $('#save-message').show();
-
-            }
-        });
 
         $('.shape-editor *').attr('disabled', 'disabled');
-
-        $("#placement").disableSelection();
 
         var tabAttrName = 'data-tab';
         var allPlacementTabs = $('ul[' + tabAttrName + ']');
@@ -129,6 +113,22 @@
                 }
             }
         }
+
+        var startPos;
+
+        $('ul[data-tab]').sortable({
+            placeholder: "placement-placeholder",
+            connectWith: "ul[data-tab]",
+            start: function (event, ui) {
+                var self = $(ui.item);
+                startPos = self.prevAll().size();
+            },
+            stop: function (event, ui) {
+                assignPositions();
+                $('#save-message').show();
+
+            }
+        })
     })(jQuery);
 //]]>
 </script>
