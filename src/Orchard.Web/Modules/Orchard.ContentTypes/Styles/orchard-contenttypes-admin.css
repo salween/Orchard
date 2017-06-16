@@ -183,18 +183,22 @@ fieldset.action {
     border: 1px solid #eee;
 }
 
-    #placement li .shape-type {
-        cursor: move;
-        background-color: #eee;
-        background: #EEE url(images/move.gif) no-repeat 10px 15px;
-        height: 30px;
-        padding: 10px 0px 0px 30px;
-    }
+#placement li .shape-type {
+    cursor: move;
+    background-color: #eee;
+    background: #EEE url(images/move.gif) no-repeat 10px 15px;
+    height: 30px;
+    padding: 10px 0px 0px 30px;
+}
 
-    #placement li .shape-editor {
-        padding: 10px;
-        background: white;
-    }
+#placement li .shape-editor {
+    padding: 10px;
+    background: white;
+}
+
+#placement > li > ul {
+    margin: 10px;
+}
 
 #save-message {
     display: none;
