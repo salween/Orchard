@@ -109,6 +109,7 @@
             reAssignIdName(input, position);  // tab
         }
     }
-
-    init();
+    $(document).ready(function () {
+        init();
+    });
 })(jQuery);
