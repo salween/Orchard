@@ -2,6 +2,7 @@
 @{
     Style.Require("ContentTypesAdmin");
     Script.Require("jQueryUI_Sortable");
+    Script.Include("contenttype-arrangement.js");
     Layout.Title = T("Edit Placement - {0}", Model.ContentTypeDefinition.DisplayName).ToString();
 
     var allTabs = Model.AllPlacements.Where(x => !string.IsNullOrEmpty(x.PlacementSettings.Tab)).Select(x => x.PlacementSettings.Tab).Distinct().ToList();
@@ -9,7 +10,7 @@
     if (indexOfTabContent > -1)
     {
         allTabs.RemoveAt(indexOfTabContent);
-    } 
+    }
     allTabs.Insert(0, "Content");
     var hiddenShapes = Model.AllPlacements.Where(x => String.IsNullOrEmpty(x.PlacementSettings.Zone) && (String.IsNullOrWhiteSpace(x.PlacementSettings.Position) || x.PlacementSettings.Position == "-"));
 }
@@ -51,6 +52,7 @@
                 @Html.HiddenFor(m => m.AllPlacements[i].PlacementSettings.Differentiator, new { @class = "differentiator" })
                 @Html.HiddenFor(m => m.AllPlacements[i].PlacementSettings.Zone, new { @class = "zone" })
                 @Html.HiddenFor(m => m.AllPlacements[i].PlacementSettings.Position, new { @class = "position" })
+                @Html.HiddenFor(m => m.AllPlacements[i].PlacementSettings.Tab, new { @class = "tab" })
             </li>
         }
     </ul>
@@ -66,69 +68,7 @@
 <script type="text/javascript">
 //<![CDATA[
     (function ($) {
-
-        var assignPositions = function () {
-            var position = 0;
-            $('.type').each(function () {
-                var input = $(this);
-                reAssignIdName(input, position);  // type
-
-                input = input.next();
-                reAssignIdName(input, position);  // differentiator
-
-                input = input.next();
-                reAssignIdName(input, position);  // zone
-
-                input = input.next();
-                reAssignIdName(input, position);  // position
-
-                input.val(++position);
-            });
-        };
-
-        var reAssignIdName = function (input, pos) {
-            var name = input.attr('name');
-            input.attr('name', name.replace(new RegExp("\\[.*\\]", 'gi'), '[' + pos + ']'));
-
-            var id = input.attr('id');
-            input.attr('id', id.replace(new RegExp('_.*__', 'i'), '_' + pos + '__'));
-        };
-
-        assignPositions();
-        
-
         $('.shape-editor *').attr('disabled', 'disabled');
-
-        var tabAttrName = 'data-tab';
-        var allPlacementTabs = $('ul[' + tabAttrName + ']');
-        if (allPlacementTabs.length !== 0) {
-            for (var i = 0; i < allPlacementTabs.length; i++) {
-                var tabName = allPlacementTabs[i].getAttribute(tabAttrName);
-                var liUnderTab = $('li[' + tabAttrName + '="' + tabName + '"]');
-                if (tabName === "Content")
-                    liUnderTab = $('li[content-part]:not([data-tab])');
-                if (liUnderTab.length !== 0) {
-                    liUnderTab.detach();
-                    liUnderTab.appendTo(allPlacementTabs[i]);
-                }
-            }
-        }
-
-        var startPos;
-
-        $('ul[data-tab]').sortable({
-            placeholder: "placement-placeholder",
-            connectWith: "ul[data-tab]",
-            start: function (event, ui) {
-                var self = $(ui.item);
-                startPos = self.prevAll().size();
-            },
-            stop: function (event, ui) {
-                assignPositions();
-                $('#save-message').show();
-
-            }
-        })
     })(jQuery);
 //]]>
 </script>

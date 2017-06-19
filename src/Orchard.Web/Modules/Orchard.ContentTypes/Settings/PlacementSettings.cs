@@ -44,7 +44,8 @@ namespace Orchard.ContentTypes.Settings {
             return (ShapeType ?? String.Empty) == (other.ShapeType ?? String.Empty)
                    && (Zone ?? String.Empty) == (other.Zone ?? String.Empty)
                    && (Position ?? String.Empty) == (other.Position ?? String.Empty)
-                   && (Differentiator ?? String.Empty) == (other.Differentiator ?? String.Empty);
+                   && (Differentiator ?? String.Empty) == (other.Differentiator ?? String.Empty)
+                   && (Tab ?? String.Empty) == (other.Tab ?? String.Empty);
         }
     }
 }

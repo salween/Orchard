@@ -36,21 +36,21 @@ namespace Orchard.ContentTypes.Extensions {
         /// <summary>
         /// Defines a custom placement
         /// </summary>
-        public static ContentTypeDefinitionBuilder Placement(this ContentTypeDefinitionBuilder builder, PlacementType placementType, string shapeType, string differentiator, string zone, string position) {
-            var placement = AddPlacement(builder.Build(), placementType, shapeType, differentiator, zone, position);
+        public static ContentTypeDefinitionBuilder Placement(this ContentTypeDefinitionBuilder builder, PlacementType placementType, string shapeType, string differentiator, string zone, string position, string tab = "") {
+            var placement = AddPlacement(builder.Build(), placementType, shapeType, differentiator, zone, position, tab);
             return builder.WithSetting("ContentTypeSettings.Placement." + placementType, placement);
         }
 
         /// <summary>
         /// Adds a placement the string representation of a placement
         /// </summary>
-        public static ContentTypeDefinition Placement(this ContentTypeDefinition builder, PlacementType placementType, string shapeType, string differentiator, string zone, string position) {
-            var placement = AddPlacement(builder, placementType, shapeType, differentiator, zone, position);
+        public static ContentTypeDefinition Placement(this ContentTypeDefinition builder, PlacementType placementType, string shapeType, string differentiator, string zone, string position, string tab = "") {
+            var placement = AddPlacement(builder, placementType, shapeType, differentiator, zone, position, tab);
             builder.Settings["ContentTypeSettings.Placement." + placementType] = placement;
             return builder;
         }
 
-        private static string AddPlacement(ContentTypeDefinition builder, PlacementType placementType, string shapeType, string differentiator, string zone, string position) {
+        private static string AddPlacement(ContentTypeDefinition builder, PlacementType placementType, string shapeType, string differentiator, string zone, string position, string tab) {
             var serializer = new JavaScriptSerializer();
             var placementSettings = GetPlacement(builder, placementType).ToList();
 
@@ -60,7 +60,8 @@ namespace Orchard.ContentTypes.Extensions {
                 ShapeType = shapeType,
                 Differentiator = differentiator,
                 Zone = zone,
-                Position = position
+                Position = position,
+                Tab = tab
             });
 
             var placement = serializer.Serialize(placementSettings.ToArray());

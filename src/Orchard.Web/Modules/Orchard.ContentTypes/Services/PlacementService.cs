@@ -173,13 +173,20 @@ namespace Orchard.ContentTypes.Services {
 
                 string zone = placement.Location;
                 string position = String.Empty;
+                string tab = String.Empty;
 
                 // if no placement is found, it's hidden, e.g., no placement was found for the specific ContentType/DisplayType
                 if (placement.Location != null) {
                     var delimiterIndex = placement.Location.IndexOf(':');
+                    var tabIndex = placement.Location.IndexOf('#');
                     if (delimiterIndex >= 0) {
                         zone = placement.Location.Substring(0, delimiterIndex);
-                        position = placement.Location.Substring(delimiterIndex + 1);
+                        if (tabIndex >= 0) {
+                            position = placement.Location.Substring(delimiterIndex + 1, (tabIndex - delimiterIndex - 1));
+                            tab = placement.Location.Substring(tabIndex + 1);
+                        } else {
+                            position = placement.Location.Substring(delimiterIndex + 1);
+                        }
                     }
                 }
 
@@ -207,7 +214,7 @@ namespace Orchard.ContentTypes.Services {
                         ShapeType = contentShapeResult.GetShapeType(),
                         Zone = zone,
                         Position = position,
-                        Tab = placement.GetTab(),
+                        Tab = tab,
                         Differentiator = contentShapeResult.GetDifferentiator() ?? String.Empty
                     }
                 };

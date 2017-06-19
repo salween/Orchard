@@ -174,6 +174,10 @@ namespace Orchard.ContentTypes.Controllers {
             contentTypeDefinition.ResetPlacement(PlacementType.Editor);
 
             foreach(var driverPlacement in viewModel.AllPlacements) {
+                if (String.Equals(driverPlacement.PlacementSettings.Tab, "Content")) {
+                    // Content tab shouldn't be recorded
+                    driverPlacement.PlacementSettings.Tab = "";
+                }
                 // if the placement has changed, persist it
                 if (!allPlacements.Any(x => x.PlacementSettings.Equals(driverPlacement.PlacementSettings))) {
                     result = result.Where(x => !x.IsSameAs(driverPlacement.PlacementSettings)).ToList();
@@ -186,7 +190,8 @@ namespace Orchard.ContentTypes.Controllers {
                                 placementSetting.ShapeType,
                                 placementSetting.Differentiator,
                                 placementSetting.Zone,
-                                placementSetting.Position);
+                                placementSetting.Position,
+                                placementSetting.Tab);
 
             }
 

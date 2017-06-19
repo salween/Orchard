@@ -57,6 +57,10 @@ namespace Orchard.ContentTypes.Services {
                                         location = String.Concat(location, ":", customPlacement.Placement.Position);
                                     }
 
+                                    if (!String.IsNullOrEmpty(customPlacement.Placement.Tab)) {
+                                        location = String.Concat(location, "#", customPlacement.Placement.Tab);
+                                    }
+
                                     return new PlacementInfo { Location = location };
                                 }
                             }
