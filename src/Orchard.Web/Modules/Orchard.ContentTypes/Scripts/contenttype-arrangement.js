@@ -29,6 +29,21 @@
                     $('#save-message').show();
                 }
             });
+            $('h3.clickable').on('click', function () {
+                toggleVisibility($(this).parent());
+            });
+            $('span.glyphicon-ok').on('click', function () {
+                var parentTabDiv = $(this).parent().parent();
+                var newTabName = parentTabDiv.find('input').val();
+                reassignTab(parentTabDiv.parent().find('li'), parentTabDiv.find('h3'), newTabName);
+                toggleVisibility(parentTabDiv);
+                $('#save-message').show();
+            });
+            $('span.glyphicon-remove').on('click', function () {
+                var parentTabDiv = $(this).parent().parent();
+                parentTabDiv.find('input').val(parentTabDiv.find('h3').text());
+                toggleVisibility(parentTabDiv);
+            });
         } else {
             $('#placement').sortable({
                 placeholder: "placement-placeholder",
@@ -45,6 +60,19 @@
         assignPositions();
     }
 
+    function toggleVisibility(parentTabDiv) {
+        var tabTitle = parentTabDiv.find('h3');
+        var inputDiv = parentTabDiv.find('div');
+        if (tabTitle.is(":visible")) {
+            tabTitle.hide();
+            inputDiv.show();
+            inputDiv.find('input').select();
+        } else {
+            tabTitle.show();
+            inputDiv.hide();
+        }
+    }
+
     function reAssignIdName(input, pos) {
         var name = input.attr('name');
         input.attr('name', name.replace(new RegExp("\\[.*\\]", 'gi'), '[' + pos + ']'));
@@ -52,6 +80,13 @@
         var id = input.attr('id');
         input.attr('id', id.replace(new RegExp('_.*__', 'i'), '_' + pos + '__'));
     };
+
+    function reassignTab(childParts, tabHeader, newTabName) {
+        if (newTabName !== undefined && newTabName !== '') {
+            childParts.find('input[type="hidden"][class="tab"]').val(newTabName);
+            tabHeader.text(newTabName);
+        }
+    }
 
     function assignPositionsWithoutTab() {
         var position = 0;

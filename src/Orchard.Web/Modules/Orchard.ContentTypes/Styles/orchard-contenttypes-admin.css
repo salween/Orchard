@@ -187,8 +187,8 @@ fieldset.action {
     cursor: move;
     background-color: #eee;
     background: #EEE url(images/move.gif) no-repeat 10px 15px;
-    height: 30px;
-    padding: 10px 0px 0px 30px;
+    height: 40px;
+    padding: 6px 0px 0px 30px;
 }
 
 #placement li .shape-editor {
@@ -198,6 +198,28 @@ fieldset.action {
 
 #placement > li > ul {
     margin: 10px;
+}
+
+#placement h3.clickable {
+    cursor: pointer;
+}
+
+#placement .shape-type > h3 {
+    margin: 5px 0 0 0;
+}
+
+#placement .glyphicon-ok {
+    color: green;
+    cursor: pointer;
+}
+
+#placement .glyphicon-remove {
+    color: red;
+    cursor: pointer;
+}
+
+#placement li button.show-hide {
+    margin-right: 1em;
 }
 
 #save-message {
