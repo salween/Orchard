@@ -22,7 +22,7 @@
 @using (Html.BeginFormAntiForgeryPost()) {
     @Html.ValidationSummary()
 
-
+    <button type="button" class="add-tab">@T("Add Tab")</button>
     <ul id="placement">
         @foreach (var tab in allTabs) {
             <li>
@@ -49,7 +49,7 @@
                 continue;
             }
             <li data-shape-type="@placement.ShapeType" data-shape-differentiator="@placement.Differentiator" data-shape-zone="Content" data-shape-position="@placement.Position" content-part @Html.Raw(string.IsNullOrEmpty(placement.Tab) ? "" : string.Format("data-tab='{0}'", placement.Tab))>
-                <div class="shape-type"><h3 class="pull-left">@placement.ShapeType @placement.Differentiator</h3><button class="show-hide pull-right">hide</button></div>
+                <div class="shape-type"><h3 class="pull-left">@placement.ShapeType @placement.Differentiator</h3><a class="show-hide pull-right">hide</a></div>
 				<div class="shape-editor">
 					@try {
 						@Display(Model.AllPlacements[i].Shape)

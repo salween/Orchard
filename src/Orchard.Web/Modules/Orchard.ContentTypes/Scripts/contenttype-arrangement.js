@@ -1,5 +1,17 @@
 ﻿(function ($) {
     var tabAttrName = 'data-tab';
+    var sortableOptionForTabs = {
+        placeholder: "placement-placeholder",
+        connectWith: 'ul[' + tabAttrName + ']',
+        start: function (event, ui) {
+            var self = $(ui.item);
+            startPos = self.prevAll().size();
+        },
+        stop: function (event, ui) {
+            assignPositionsWithTab(ui.item);
+            showSaveMessage();
+        }
+    };
     function init() {
         var assignPositions = assignPositionsWithoutTab;
         var startPos;
@@ -17,33 +29,10 @@
             }
             assignPositions = assignPositionsWithTab;
 
-            $('ul[' + tabAttrName + ']').sortable({
-                placeholder: "placement-placeholder",
-                connectWith: 'ul[' + tabAttrName + ']',
-                start: function (event, ui) {
-                    var self = $(ui.item);
-                    startPos = self.prevAll().size();
-                },
-                stop: function (event, ui) {
-                    assignPositions(ui.item);
-                    showSaveMessage();
-                }
-            });
-            $('h3.clickable').on('click', function () {
-                toggleVisibility($(this).parent());
-            });
-            $('span.glyphicon-ok').on('click', function () {
-                var parentTabDiv = $(this).parent().parent();
-                var newTabName = parentTabDiv.find('input').val();
-                reassignTab(parentTabDiv.parent().find('li'), parentTabDiv.find('h3'), newTabName);
-                toggleVisibility(parentTabDiv);
-                showSaveMessage();
-            });
-            $('span.glyphicon-remove').on('click', function () {
-                var parentTabDiv = $(this).parent().parent();
-                parentTabDiv.find('input').val(parentTabDiv.find('h3').text());
-                toggleVisibility(parentTabDiv);
-            });
+            $('ul[' + tabAttrName + ']').sortable(sortableOptionForTabs);
+            $('h3.clickable').on('click', tabTitleClicked);
+            $('span.glyphicon-ok').on('click', tabChanged);
+            $('span.glyphicon-remove').on('click', tabCancelChange);
         } else {
             $('#placement').sortable({
                 placeholder: "placement-placeholder",
@@ -58,6 +47,69 @@
             });
         }
         assignPositions();
+
+        $('.add-tab').on('click', function () {
+            if ($('ul[' + tabAttrName + ']').length <= 0) {
+                var newTab = $(createNewTab('Content', false));
+                $('#placement').append(newTab);
+
+                // rebind events
+                newTab.find('h3.clickable').on('click', tabTitleClicked);
+                newTab.find('span.glyphicon-ok').on('click', tabChanged);
+                newTab.find('span.glyphicon-remove').on('click', tabCancelChange);
+                newTab.find('ul[' + tabAttrName + ']').sortable(sortableOptionForTabs).disableSelection();
+            }
+            
+            var newTab = $(createNewTab('', true));
+            $('#placement').append(newTab);
+
+            // rebind events
+            newTab.find('h3.clickable').on('click', tabTitleClicked);
+            newTab.find('span.glyphicon-ok').on('click', tabChanged);
+            newTab.find('span.glyphicon-remove').on('click', tabCancelChange);
+            newTab.find('ul[' + tabAttrName + ']').sortable(sortableOptionForTabs).disableSelection();
+            $('ul[' + tabAttrName + ']').sortable("refresh");
+        });
+    }
+    
+    function tabTitleClicked() {
+        toggleVisibility($(this).parent());
+    }
+
+    function tabChanged() {
+        var parentTabDiv = $(this).parent().parent();
+        var newTabName = parentTabDiv.find('input').val();
+        reassignTab(parentTabDiv.parent().find('li'), parentTabDiv.find('h3'), newTabName);
+        parentTabDiv.next('ul').attr(tabAttrName, newTabName);
+        toggleVisibility(parentTabDiv);
+        showSaveMessage();
+    }
+
+    function tabCancelChange() {
+        var parentTabDiv = $(this).parent().parent();
+        parentTabDiv.find('input').val(parentTabDiv.find('h3').text());
+        toggleVisibility(parentTabDiv);
+    }
+
+    function createNewTab(tabName, isTabRename) {
+        if (!tabName || tabName === '') {
+            tabName = "Click here to edit";
+        }
+        var clickableClass = "";
+        if (isTabRename) {
+            clickableClass = "clickable";
+        }
+        return "<li>" + 
+            "<div class='shape-type'>" +
+                "<h3 class='" + clickableClass + "'>" + tabName + "</h3>" + 
+                    "<div style='display: none'>" +
+                        "<input type='text' value='" + tabName + "' />" +
+                        "<span class='glyphicon glyphicon-ok'></span>" +
+                        "<span class='glyphicon glyphicon-remove'></span>" +
+                    "</div>" +
+            "</div>" +
+            "<ul " + tabAttrName + "='" + tabName + "'></ul>" +
+        "</li>";
     }
 
     function showSaveMessage() {
