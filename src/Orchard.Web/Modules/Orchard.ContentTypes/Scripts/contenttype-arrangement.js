@@ -26,7 +26,7 @@
                 },
                 stop: function (event, ui) {
                     assignPositions(ui.item);
-                    $('#save-message').show();
+                    showSaveMessage();
                 }
             });
             $('h3.clickable').on('click', function () {
@@ -37,7 +37,7 @@
                 var newTabName = parentTabDiv.find('input').val();
                 reassignTab(parentTabDiv.parent().find('li'), parentTabDiv.find('h3'), newTabName);
                 toggleVisibility(parentTabDiv);
-                $('#save-message').show();
+                showSaveMessage();
             });
             $('span.glyphicon-remove').on('click', function () {
                 var parentTabDiv = $(this).parent().parent();
@@ -53,11 +53,15 @@
                 },
                 stop: function (event, ui) {
                     assignPositions();
-                    $('#save-message').show();
+                    showSaveMessage();
                 }
             });
         }
         assignPositions();
+    }
+
+    function showSaveMessage() {
+        $('#save-message').show();
     }
 
     function toggleVisibility(parentTabDiv) {
